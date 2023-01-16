@@ -3,8 +3,6 @@
  * To learn more about Browser checks and Playwright visit: https://www.checklyhq.com/docs/browser-checks
  */
 
-import seo from "./seo.check.ts";
-
 // Create a Chromium browser
 const { chromium } = require('playwright')
 
@@ -27,10 +25,6 @@ async function run () {
   // We close the page to clean up and gather performance metrics.
   await page.close()
   await browser.close()
-  
-  // We check SEO
-  await seo.run()
-  
 }
 
 run()
