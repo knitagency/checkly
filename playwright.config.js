@@ -1,5 +1,9 @@
 // @ts-check
 import { devices } from "@playwright/test";
+import dotenv from "dotenv";
+import path from "path";
+
+dotenv.config({ path: path.resolve(__dirname, ".", ".env") });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -16,6 +20,12 @@ const config = {
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [
+    [
+      "./node_modules/@testomatio/reporter/lib/adapter/playwright.js",
+      {
+        apiKey: process.env.TESTOMATIO,
+      },
+    ],
     ["json", { outputFile: "results/results.json" }],
     ["line"],
     ["list", { printSteps: true }],

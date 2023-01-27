@@ -3,9 +3,9 @@ import { test, expect } from "@playwright/test";
 
 test("home page has a title", async ({ page }) => {
   // Constants
-  const site = "https://knitagency.com";
-  const title = "Knit Agency | Ecommerce Web Design & Development Agency";
-  // We visit the page. This waits for the "load" event by default.
+  const site = process.env.SITE_URL || "";
+  const title = process.env.SITE_TITLE || "";
+  // We visit the page.
   const response = await page.goto(site);
   // We expect a title "to contain" a substring.
   await expect(page).toHaveTitle(title);
