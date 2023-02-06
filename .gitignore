@@ -5,3 +5,4 @@ node_modules/
 *screenshot*
 /playwright/.cache/
 .env
+.env*

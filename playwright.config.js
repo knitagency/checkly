@@ -3,6 +3,9 @@ import { devices } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 
+// Pass in variable on command line to switch .env file when testing specific sites.
+// Use .env.<site> to configure variables unique to each site for local testing
+// This file is ignored when using a test runner like checkly
 dotenv.config({ path: path.resolve(__dirname, ".", ".env") });
 
 /**
@@ -20,12 +23,6 @@ const config = {
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [
-    [
-      "./node_modules/@testomatio/reporter/lib/adapter/playwright.js",
-      {
-        apiKey: process.env.TESTOMATIO,
-      },
-    ],
     ["json", { outputFile: "results/results.json" }],
     ["line"],
     ["list", { printSteps: true }],
