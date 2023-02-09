@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 test('test', async ({ page }) => {
-    await page.goto('https://scfvs8pg1i24xncr-8056668196.shopifypreview.com/');
+    const url = process.env.SITE_URL || "";
+
+    await page.goto(url);
 
     // Check PLP and PDP
     await page.locator('#shopify-section-static-header span:has-text("Shop")').hover();
