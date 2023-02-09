@@ -3,6 +3,7 @@ test('test', async ({ page }) => {
     await page.goto('https://scfvs8pg1i24xncr-8056668196.shopifypreview.com/');
 
     // Check PLP and PDP
+    await page.locator('#shopify-section-static-header span:has-text("Shop")').hover();
     await page.locator('#header-dropdown-shop a:has-text("Cookies")').click();
     await expect(page).toHaveURL('https://scfvs8pg1i24xncr-8056668196.shopifypreview.com/collections/cookies');
     await page.locator('li:has-text("Quickshop Choose options Mexican Wedding Cookies $5.99 - $45.00 Mexican Wedding ")').getByRole('link', { name: 'Choose options' }).click();
@@ -15,6 +16,7 @@ test('test', async ({ page }) => {
     await page.getByRole('button', { name: 'Add to cart' }).click();
 
     // QuickView add product to the cart
+    await page.locator('#shopify-section-static-header span:has-text("Shop")').hover();
     await page.locator('#header-dropdown-shop a:has-text("Hot Chocolate")').click();
     await expect(page).toHaveURL('https://scfvs8pg1i24xncr-8056668196.shopifypreview.com/collections/mexican-chocolate');
     await page.locator('li:has-text("Quickshop Choose options Champurrado $8.00 - $75.00 Champurrado $8.00 - $75.00")').getByRole('button', { name: 'Quickshop' }).click();
