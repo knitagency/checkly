@@ -29,6 +29,7 @@ const config = {
     ["html", { open: "never", outputFolder: "reports" }],
   ],
   use: {
+    headless: false,
     actionTimeout: 0,
     trace: "on-first-retry",
     screenshot: "on",
