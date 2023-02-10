@@ -11,8 +11,8 @@ PLP check:
 test('Check the PLP', async ({ page }) => {
     const site = process.env.SITE_URL || ""
 
-    // Access to the URL
-    await page.goto(site)
+    // We visit the page.
+    const response = await page.goto(site);
 
     // If the page doesn't return a successful response code, we fail the check.
     if (response.status() > 399) {
