@@ -1,17 +1,14 @@
 import { test, expect } from '@playwright/test';
 
 test('Check the footer', async ({ page }) => {
-    //const site = process.env.SITE_URL || "";
-    //const title = process.env.SITE_TITLE || "";
+    const site = process.env.SITE_URL || "";
     // We visit the page.
-    //const response = await page.goto(site);
-
-    await page.goto('https://www.sferra.com/?_ab=0&_fd=0&_sc=1');
+    const response = await page.goto(site);
 
     // If the page doesn't return a successful response code, we fail the check.
-    //if (response.status() > 399) {
-    //    throw new Error(`Failed with response code ${response.status()}`);
-    //}
+    if (response.status() > 399) {
+        throw new Error(`Failed with response code ${response.status()}`);
+    }
 
     //await page.isVisible('Your location is set to CanadaShop in USD $Get shipping options for CanadaContin')
     //await page.getByRole('button', { name: 'Continue' }).click()

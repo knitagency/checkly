@@ -19,8 +19,6 @@ test('Check the PLP', async ({ page }) => {
         throw new Error(`Failed with response code ${response.status()}`);
     }
 
-    await page.goto('https://www.sferra.com/?_ab=0&_fd=0&_sc=1');
-
     // Check Duvet Covers PLP
     await page.getByRole('link', { name: 'BEDDING BEDDING' }).hover()
     await page.getByRole('link', { name: 'Duvet Covers' }).click();
