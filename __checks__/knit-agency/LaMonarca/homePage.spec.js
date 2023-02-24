@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Check the Homepage', async ({ page }) => {
 
-    const site = process.env.SITE_URL || ""
+    const site = "https://lamonarcabakery.com/"
 
     // We visit the page.
     const response = await page.goto(site);
@@ -10,6 +10,10 @@ test('Check the Homepage', async ({ page }) => {
     // If the page doesn't return a successful response code, we fail the check.
     if (response.status() > 399) {
         throw new Error(`Failed with response code ${response.status()}`);
+    }
+
+    if (page.getByTestId('klaviyo-form-QVUyEF').isVisible()) {
+        page.getByRole('button', { name: 'Close form 1' }).click();
     }
 
     // Check Napkins PLP
