@@ -30,7 +30,7 @@ test('Check the PDP Mexican Coffee', async ({ page }) => {
     
     // Check Mexican Coffee PLP
     await page.getByText('SHOP Down Arrow Icon').hover();
-    await page.getByRole('link', { name: 'MEXICAN COFFEE' }).click();
+    await page.getByRole('link', { name: 'MEXICAN COFFEE' }).click(({ timeout: 10000 }));
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/frontpage');
 
     await page.getByRole('heading', { name: 'Mexican Coffee' }).click();
