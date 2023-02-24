@@ -34,6 +34,7 @@ const config = {
     trace: "on-first-retry",
     screenshot: "on",
     video: "on",
+    navigationTimeout: 10000
   },
   projects: [
     {
