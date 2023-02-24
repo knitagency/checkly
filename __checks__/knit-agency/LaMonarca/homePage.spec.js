@@ -13,11 +13,11 @@ test('Check the Homepage', async ({ page }) => {
     }
 
     if (page.getByTestId('klaviyo-form-QVUyEF').isVisible()) {
-        page.getByRole('button', { name: 'Close form 1' }).click();
+        await page.getByRole('button', { name: 'Close form 1' }).click();
     }
 
     // Check Napkins PLP
-    await page.getByRole('link', { name: 'SHOP' }).hover()
+    await page.getByText('SHOP Down Arrow Icon').hover()
     await page.getByRole('link', { name: 'MEXICAN COFFEE' }).click();
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/frontpage');
 
