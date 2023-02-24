@@ -16,9 +16,9 @@ function checkRespone(page) {
     }
 }
 
-function checkPopUp(page) {
+async function checkPopUp(page) {
     if (page.getByTestId('klaviyo-form-QVUyEF').isVisible()) {
-        page.getByRole('button', { name: 'Close form 1' }).click();
+        await page.getByRole('button', { name: 'Close form 1' }).click();
     }
 }
 
