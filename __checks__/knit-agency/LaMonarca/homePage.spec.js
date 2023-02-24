@@ -2,17 +2,15 @@ import { test, expect } from '@playwright/test';
 
 test('Check the Homepage', async ({ page }) => {
 
-    /*     const site = process.env.SITE_URL || ""
-    
-        // We visit the page.
-        const response = await page.goto(site);
-    
-        // If the page doesn't return a successful response code, we fail the check.
-        if (response.status() > 399) {
-            throw new Error(`Failed with response code ${response.status()}`);
-        } */
+    const site = process.env.SITE_URL || ""
 
-    await page.goto('https://lamonarcabakery.com/');
+    // We visit the page.
+    const response = await page.goto(site);
+
+    // If the page doesn't return a successful response code, we fail the check.
+    if (response.status() > 399) {
+        throw new Error(`Failed with response code ${response.status()}`);
+    }
 
     // Check Napkins PLP
     await page.getByRole('link', { name: 'SHOP' }).hover()
