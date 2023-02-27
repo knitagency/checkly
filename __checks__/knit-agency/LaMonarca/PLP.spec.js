@@ -37,8 +37,10 @@ async function closeBrowser(page) {
 }
 
 test('Check the PDP Mexican Coffee', async ({ page }) => {
+    const url = process.env.SITE_URL || "";
+
     // We visit the page.
-    await page.goto(site);
+    const response = page.goto(url);
 
     checkPopUp(page);
 

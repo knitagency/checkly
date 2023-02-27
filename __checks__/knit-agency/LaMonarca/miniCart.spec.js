@@ -11,8 +11,10 @@ const site = "https://lamonarcabakery.com/"
 // });
 
 function checkRespone(page) {
+    const url = process.env.SITE_URL || "";
+
     // We visit the page.
-    const response = page.goto(site);
+    const response = page.goto(url);
 
     // If the page doesn't return a successful response code, we fail the check.
     if (response.status() > 399) {

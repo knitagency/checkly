@@ -29,10 +29,10 @@ async function closeBrowser(page) {
 }
 
 test('Smoke Test', async ({ page }) => {
-    //const url = process.env.SITE_URL || "";
+    const url = process.env.SITE_URL || "";
 
     // We visit the page.
-    await page.goto(site);
+    const response = page.goto(url);
 
     checkPopUp(page);
 
