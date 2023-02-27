@@ -6,6 +6,10 @@ const site = "https://lamonarcabakery.com/"
 //     page = await browser.newPage();
 // });
 
+// test.afterAll(async () => {
+//     await page.close();
+// });
+
 function checkRespone(page) {
     // We visit the page.
     const response = page.goto(site);
@@ -22,12 +26,22 @@ async function checkPopUp(page) {
     }
 }
 
+async function takeScreenshot(page) {
+    // We snap a screenshot.
+    await page.screenshot({ path: "screenshots/screenshot.jpg" });
+}
+
+async function closeBrowser(page) {
+    // We close the page to clean up and gather performance metrics.
+    await page.close();
+}
+
 test('Check the PDP Mexican Coffee', async ({ page }) => {
     // We visit the page.
     await page.goto(site);
 
     checkPopUp(page);
-    
+
     // Check Mexican Coffee PLP
     await page.getByText('SHOP Down Arrow Icon').hover();
     await page.getByRole('link', { name: 'MEXICAN COFFEE' }).click(({ timeout: 10000 }));
@@ -42,6 +56,11 @@ test('Check the PDP Mexican Coffee', async ({ page }) => {
     await page.getByRole('combobox', { name: 'sort by' }).selectOption('price-ascending');
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/frontpage?sort_by=price-ascending');
     await page.locator('.content-area').first().isVisible();
+
+    // We snap a screenshot.
+    //takeScreenshot(page);
+    // We close the page to clean up and gather performance metrics.
+    closeBrowser(page);
 });
 
 
@@ -61,6 +80,11 @@ test('Check the PDP Hot Chocolate', async ({ page }) => {
     await page.getByRole('combobox', { name: 'sort by' }).selectOption('price-ascending');
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/mexican-chocolate?sort_by=price-ascending');
     await page.locator('.content-area').first().isVisible();
+
+    // We snap a screenshot.
+    //takeScreenshot(page);
+    // We close the page to clean up and gather performance metrics.
+    closeBrowser(page);
 })
 
 test('Check the PDP Cookies', async ({ page }) => {
@@ -80,6 +104,11 @@ test('Check the PDP Cookies', async ({ page }) => {
     await page.getByRole('combobox', { name: 'sort by' }).selectOption('price-ascending');
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/cookies?sort_by=price-ascending');
     await page.locator('.content-area').first().isVisible();
+
+    // We snap a screenshot.
+    //takeScreenshot(page);
+    // We close the page to clean up and gather performance metrics.
+    closeBrowser(page);
 })
 
 // test.afterAll(async () => {

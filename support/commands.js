@@ -52,8 +52,24 @@ async function visitTheme(page) {
 /**
  * With items in cart, use this command to proceed to Checkout from the Cart
  */
-Cypress.Commands.add('CartProceedToCheckout', () => {
-    cy.VisitTheme('/cart').then(() => {
-        cy.get('[data-cart-checkout-button]').click();
-    });
-});
+// Cypress.Commands.add('CartProceedToCheckout', () => {
+//     cy.VisitTheme('/cart').then(() => {
+//         cy.get('[data-cart-checkout-button]').click();
+//     });
+// });
+
+async function checkPopUp(page) {
+    if (page.getByTestId('klaviyo-form-QVUyEF').isVisible()) {
+        await page.getByRole('button', { name: 'Close form 1' }).click();
+    }
+}
+
+async function takeScreenshoot(page) {
+    // We snap a screenshot.
+    await page.screenshot({ path: "screenshots/screenshot.jpg" });
+}
+
+async function closeBrowser(page) {
+    // We close the page to clean up and gather performance metrics.
+    await page.close();
+}

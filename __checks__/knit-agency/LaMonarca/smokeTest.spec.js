@@ -1,11 +1,43 @@
 import { test, expect } from '@playwright/test';
-test('test', async ({ page }) => {
-    const url = process.env.SITE_URL || "";
 
-    await page.goto(url);
+const site = "https://lamonarcabakery.com/";
+
+function checkRespone(page) {
+    // We visit the page.
+    const response = page.goto(site);
+
+    // If the page doesn't return a successful response code, we fail the check.
+    if (response.status() > 399) {
+        throw new Error(`Failed with response code ${response.status()}`);
+    }
+}
+
+async function checkPopUp(page) {
+    if (page.getByTestId('klaviyo-form-QVUyEF').isVisible()) {
+        await page.getByRole('button', { name: 'Close form 1' }).click();
+    }
+}
+
+async function takeScreenshot(page) {
+    // We snap a screenshot.
+    await page.screenshot({ path: "screenshots/screenshot.jpg" });
+}
+
+async function closeBrowser(page) {
+    // We close the page to clean up and gather performance metrics.
+    await page.close();
+}
+
+test('Smoke Test', async ({ page }) => {
+    //const url = process.env.SITE_URL || "";
+
+    // We visit the page.
+    await page.goto(site);
+
+    checkPopUp(page);
 
     // Check PLP and PDP
-    await page.locator('#shopify-section-static-header span:has-text("Shop")').hover();
+    await page.getByText('SHOP Down Arrow Icon').hover();
     await page.locator('#header-dropdown-shop a:has-text("Cookies")').click();
     await expect(page).toHaveURL('https://scfvs8pg1i24xncr-8056668196.shopifypreview.com/collections/cookies');
     await page.locator('li:has-text("Quickshop Choose options Mexican Wedding Cookies $5.99 - $45.00 Mexican Wedding ")').getByRole('link', { name: 'Choose options' }).click();
