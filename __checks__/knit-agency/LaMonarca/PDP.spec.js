@@ -32,11 +32,12 @@ test('Check the PDP', async ({ page }) => {
     const url = process.env.SITE_URL || "";
 
     // We visit the page.
-    const response = page.goto(url);
+    await page.goto(site);
 
-    checkPopUp(page);
+    await checkPopUp(page);
 
-    await page.getByRole('link', { name: 'COOKIES' }).click();
+    await page.getByText('SHOP Down Arrow Icon').hover();
+    await page.getByRole('link', { name: 'COOKIES' }).first().click();
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/cookies');
 
     await page.locator('li:has-text("Quickshop Add to cart Unavailable Cinnamon Cookies $5.99 Cinnamon Cookies $5.99")').getByRole('button', { name: 'Add to cart button' }).click();

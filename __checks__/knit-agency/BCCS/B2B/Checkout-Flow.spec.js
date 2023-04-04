@@ -1,7 +1,10 @@
 // @ts-nocheck
 import { test, expect } from "@playwright/test"
+// Method from the helper class
+import { CommandsHelper } from '../../../../support/commandsHelper';
 
 test("Checking Checkout Flow", async ({ page }) => {
+  const helper = new CommandsHelper(page);
   // Constants
   //const site = ({}).BASE_URL;
   const site = "https://bccs-dev-b2b.myshopify.com/"
@@ -87,7 +90,7 @@ test("Checking Checkout Flow", async ({ page }) => {
       expect(page.locator(".passwordentry-title")),
         async () => {
           //page.getByPlaceholder('Password').fill(process.env.SHOP_PASSWORD_PAGE);
-          page.locator("input#password").fill(process.env.SHOP_PASSWORD_PAGE)
+          page.locator("input#password").fill('quoddity')
           page.getByRole("button", { name: "Submit" }).click()
         }
     }

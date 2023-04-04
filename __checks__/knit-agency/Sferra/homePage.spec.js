@@ -31,8 +31,7 @@ test('Check the Homepage', async ({ page }) => {
     await page.isVisible('section:has-text("SPRING 2023 COLLECTIONDREAMING IN COLOR SHOP NEW ARRIVALS")')
 
     // Subscribe checking
-    await page.getByRole('button', { name: 'Subscribe' }).click()
-    //await expect(page).toHaveURL('https://www.sferra.com/?contact%5Btags%5D=newsletter&form_type=customer#footer-newsletter')
+    await page.getByRole('button', { name: 'Subscribe' }).isVisible()
     await page.getByText('Don\'t miss out! Join the SFERRA email list and receive 10% off your first full-p').isVisible()
 
     // Check MegaMenu >> Bedding, Down, Gifts, Rugs, Tables

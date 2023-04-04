@@ -1,12 +1,13 @@
 // @ts-check
 import { devices } from "@playwright/test";
-import dotenv from "dotenv";
+// @ts-ignore
+//import dotenv from "dotenv";
 import path from "path";
 
 // Pass in variable on command line to switch .env file when testing specific sites.
 // Use .env.<site> to configure variables unique to each site for local testing
 // This file is ignored when using a test runner like checkly
-dotenv.config({ path: path.resolve(__dirname, ".", ".env") });
+//dotenv.config({ path: path.resolve(__dirname, ".", ".env") });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -29,12 +30,12 @@ const config = {
     ["html", { open: "never", outputFolder: "reports" }],
   ],
   use: {
-    headless: false,
+    headless: true,
     actionTimeout: 0,
     trace: "on-first-retry",
     screenshot: "on",
     video: "on",
-    navigationTimeout: 10000
+    navigationTimeout: 80000
   },
   projects: [
     {

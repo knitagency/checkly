@@ -34,7 +34,7 @@ test('Smoke Test', async ({ page }) => {
     // We visit the page.
     const response = page.goto(url);
 
-    checkPopUp(page);
+    await checkPopUp(page);
 
     // Check PLP and PDP
     await page.getByText('SHOP Down Arrow Icon').hover();

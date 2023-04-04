@@ -1,10 +1,12 @@
 import { test, expect } from '@playwright/test';
 
+const site = "https://lamonarcabakery.com/";
+
 function checkRespone(page) {
     const url = process.env.SITE_URL || "";
 
     // We visit the page.
-    const response = page.goto(url);
+    //const response = page.goto(url);
 
     // If the page doesn't return a successful response code, we fail the check.
     if (response.status() > 399) {
@@ -28,17 +30,27 @@ async function closeBrowser(page) {
     await page.close();
 }
 
-test('Check the Homepage', async ({ page }) => {
+test('Check the Homepage', async ({ page, isMobile }) => {
     const url = process.env.SITE_URL || "";
 
     // We visit the page.
-    const response = page.goto(url);
+    await page.goto(site);
+    await page.waitForLoadState();
 
-    checkPopUp(page);
+    await checkPopUp(page);
 
     // Check Mexican Coffee PLP
-    await page.getByText('SHOP Down Arrow Icon').hover()
-    await page.getByRole('link', { name: 'MEXICAN COFFEE' }).click();
+    // If is the mobile version we might need to check it other elements
+    if (isMobile) {
+        await page.getByRole('link', { name: 'Main menu' }).click();
+        await page.getByText('SHOP Plus Icon Minus Icon').click(); 
+        await page.getByRole('link', { name: 'MEXICAN COFFEE' }).nth(0).click();   
+    } else {
+        await page.getByText('SHOP Down Arrow Icon').hover()
+        await page.getByRole('link', { name: 'MEXICAN COFFEE' }).first().click();
+    }
+
+    //await page.getByRole('link', { name: 'MEXICAN COFFEE' }).first().click();
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/frontpage');
 
     await page.getByRole('heading', { name: 'Mexican Coffee' }).click();

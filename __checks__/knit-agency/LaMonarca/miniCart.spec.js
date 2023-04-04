@@ -11,10 +11,10 @@ const site = "https://lamonarcabakery.com/"
 // });
 
 function checkRespone(page) {
-    const url = process.env.SITE_URL || "";
+    //const url = process.env.SITE_URL || "";
 
     // We visit the page.
-    const response = page.goto(url);
+    //const response = page.goto(url);
 
     // If the page doesn't return a successful response code, we fail the check.
     if (response.status() > 399) {
@@ -42,11 +42,11 @@ test('MiniCart check', async ({ page }) => {
     // We visit the page.
     await page.goto(site);
 
-    checkPopUp(page);
+    await checkPopUp(page);
 
     // Select option
     await page.getByText('SHOP Down Arrow Icon').hover();
-    await page.getByRole('link', { name: 'COOKIES' }).click();
+    await page.getByRole('link', { name: 'COOKIES' }).first().click();
     await expect(page).toHaveURL('https://lamonarcabakery.com/collections/cookies');
 
     // Add product to the cart
