@@ -70,9 +70,13 @@ const enterStorePassword = async (page, url) => {
 
 // login as customer (hard coded at the moment) need to figure out best way to get email & password
 const loginAsCustomer = async (page, path = "", url, storePassword) => {
+	const user = "Multipass.Customer1@bcldb.com";
+	const password = "MovingForward7!";
+
 	if (storePassword) {
 		await enterStorePassword(page, url, storePassword);
 	}
+
 	await page.getByRole("link", { name: "Sign in" }).click();
 	await page.getByRole("button", { name: "Advanced" }).click();
 	await page.locator("#proceed-link").click();
@@ -107,6 +111,7 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 	 */
 	for (let index = 0; index < cartList.length; index++) {
 		await page.getByPlaceholder("What are you looking for?").click();
+		await page.waitForTimeout(1500);
 		await page
 			.getByPlaceholder("What are you looking for?")
 			.fill(cartList[index].query);
