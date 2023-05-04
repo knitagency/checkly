@@ -70,9 +70,6 @@ const enterStorePassword = async (page, url) => {
 
 // login as customer (hard coded at the moment) need to figure out best way to get email & password
 const loginAsCustomer = async (page, path = "", url, storePassword) => {
-	const user = "Multipass.Customer1@bcldb.com";
-	const password = "MovingForward7!";
-
 	if (storePassword) {
 		await enterStorePassword(page, url, storePassword);
 	}
@@ -245,6 +242,10 @@ const clearLocalStorage = async (page) => {
 //   });
 // });
 
+const waitForPageToFullyRender = async (page, timeout, message = '') => {
+	return page.waitForTimeout(timeout);
+}
+
 export {
 	insertParam,
 	generateThemeRoute,
@@ -262,5 +263,6 @@ export {
 	removeDollarSign,
 	proceedToCart,
 	getLocalStorage,
-	clearLocalStorage
+	clearLocalStorage,
+	waitForPageToFullyRender
 };
