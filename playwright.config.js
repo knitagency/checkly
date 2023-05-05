@@ -14,6 +14,7 @@ dotenv.config({ path: path.resolve(__dirname, ".", ".env") });
  */
 const config = {
   testDir: "./__checks__",
+  testMatch: /.*.js/,
   timeout: 30 * 1000,
   expect: {
     timeout: 5000,

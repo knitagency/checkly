@@ -7,8 +7,6 @@ import { expect } from "@playwright/test";
   {param} string url to append string to
   {return} string
 */
-// commands.js
-
 const insertParam = (key, value, url) => {
 	const newUrl = new URL(url);
 	newUrl.searchParams.append(key, value);
@@ -110,7 +108,9 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 		await page
 			.getByPlaceholder("What are you looking for?")
 			.fill(cartList[index].query);
+		await page.waitForSelector(".search-flydown", { timeout: 5000 });
 		await expect(page.locator(".search-flydown").first()).toBeVisible(true);
+		await page.waitForSelector(".search-flydown--results", { timeout: 5000 });
 		await expect(page.locator(".search-flydown--results")).toBeVisible(true);
 		await page.locator(".productlist--item a").first().click();
 		await page
@@ -121,6 +121,10 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 			.click({ timeout: 5000 });
 	}
 };
+
+const proceedToCart = async (page) => {
+	await page.locator(".site-navigation .site-header-cart--button").click();
+}
 
 const proceedToCheckout = async (page) => {
 	await page.locator(".site-navigation .site-header-cart--button").click();
@@ -185,6 +189,10 @@ const checkThankYouStep = async (page) => {
 	await expect(page.locator(".step[data-step='thank_you']")).toBeVisible(true);
 };
 
+const removeDollarSign = (string) => {
+	return string.replace("$", "");
+};
+
 // B2C functions that need to be converted
 // Cypress.Commands.add('fillOutShippingStep', () => {
 //   const actions = [
@@ -233,4 +241,6 @@ export {
 	checkThankYouStep,
 	enterStorePassword,
 	redirect404Check,
+	removeDollarSign,
+	proceedToCart
 };
