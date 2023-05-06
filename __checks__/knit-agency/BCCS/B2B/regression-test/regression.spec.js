@@ -14,47 +14,62 @@ Feature: Check the main workflow is working
 */
 
 import { test, expect } from "@playwright/test";
-
 import {
 	generateThemeRoute,
 	loginAsCustomer,
 	AddProductsFromHeaderSearch,
 	proceedToCheckout,
 } from "../../utilities/utils";
+import {
+	B2B_DEV_URL,
+	THEME_ID,
+	STORE_PASSWORD,
+} from "../../utilities/constants";
 
-const skus = [{ query: "1000132", quantity: "1" }];
+const items = [{ query: "1000132", quantity: "1" }];
+
+const DOM_ELEMENTS = {
+	breadCrumbsContainer: ".breadcrumbs-container",
+	productTitle: ".site-main .product-title",
+	shortDescription: ".product-short-description",
+	productGallery: ".site-main .product-gallery",
+	productCharacteristics: ".product-characteristics",
+	continueButton: "#continue_button",
+	checkoutHeader: "#main-header",
+};
 
 test("Regression Test, for logged-in customers", async ({ page }) => {
 	await test.step("Type the product in the searchbar and go to the PDP", async () => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-		await loginAsCustomer(page, "/", route, "quoddity");
-		await AddProductsFromHeaderSearch(page, skus);
-		await expect(page.locator(".breadcrumbs-container")).toBeVisible();
-		await expect(page.locator(".site-main .product-title")).toBeVisible();
-		await expect(page.locator(".product-short-description")).toBeVisible();
-		await expect(page.locator(".site-main .product-gallery")).toBeVisible();
-		await expect(page.locator(".product-characteristics")).toBeVisible();
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+		await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+		await AddProductsFromHeaderSearch(page, items);
+		await expect(page.locator(DOM_ELEMENTS.breadCrumbsContainer)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.productTitle)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.shortDescription)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.productGallery)).toBeVisible();
+		await expect(
+			page.locator(DOM_ELEMENTS.productCharacteristics)
+		).toBeVisible();
 	});
 
 	await test.step("Proceed to the checkout and place the order", async () => {
-		await expect(page.locator(".breadcrumbs-container")).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.breadCrumbsContainer)).toBeVisible();
 		await proceedToCheckout(page);
 
 		// Continue the shipping
-		await page.locator("#continue_button").first().click();
-
-		await page.waitForSelector("#main-header", { timeout: 5000 });
-		await expect(page.locator("#main-header")).toHaveText("Shipping method");
+		await page.locator(DOM_ELEMENTS.continueButton).first().click();
+		await page.waitForSelector(DOM_ELEMENTS.checkoutHeader, { timeout: 5000 });
+		await expect(page.locator(DOM_ELEMENTS.checkoutHeader)).toHaveText(
+			"Shipping method"
+		);
 
 		// Continue the payment
-		await page.locator("#continue_button").first().click();
+		await page.locator(DOM_ELEMENTS.continueButton).first().click();
 
 		// Complete the order
-		await page.locator(".shown-if-js > #continue_button").first().click();
+		await page
+			.locator(`.shown-if-js > ${DOM_ELEMENTS.continueButton}`)
+			.first()
+			.click();
 	});
 });

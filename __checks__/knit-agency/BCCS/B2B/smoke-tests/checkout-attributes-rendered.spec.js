@@ -5,6 +5,11 @@ import {
 	AddProductsFromHeaderSearch,
 	proceedToCheckout,
 } from "../../utilities/utils";
+import {
+	B2B_DEV_URL,
+	THEME_ID,
+	STORE_PASSWORD,
+} from "../../utilities/constants";
 
 /*
 Feature: Smoke test Checkout creation
@@ -12,7 +17,7 @@ Feature: Smoke test Checkout creation
   on the Checkout page
 */
 
-const skus = [
+const items = [
 	{ query: "kush", quantity: "1" },
 	{ query: "blueberry", quantity: "2" },
 ];
@@ -29,32 +34,30 @@ const requiredAttributes = [
 	"licence_type",
 ];
 
+const DOM_ELEMENTS = {
+	hiddenInput:
+		'input[type=hidden][data-checkout-attribute][name="checkout[attributes]',
+	sidebar: ".sidebar",
+};
 const valideHiddenInputs = async (page, value) => {
 	const input = await page
-		.locator(
-			`input[type=hidden][data-checkout-attribute][name="checkout[attributes][${value}]"]`
-		)
+		.locator(`${DOM_ELEMENTS.hiddenInput}[${value}]"]`)
 		.first();
 
 	const inputValue = await input.getAttribute("value");
-	await expect(inputValue).not.toBe('');
+	await expect(inputValue).not.toBe("");
 };
 
 test.describe("Smoke test Checkout creation", () => {
 	test("Add Items to Cart and Proceed to Checkout, Verify Checkout Attributes Exist", async ({
 		page,
 	}) => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-		await loginAsCustomer(page, "/", route, "quoddity");
-		await AddProductsFromHeaderSearch(page, skus);
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+		await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+		await AddProductsFromHeaderSearch(page, items);
 		await proceedToCheckout(page);
-		
-		await page.waitForSelector('.sidebar', { timeout: 20000 });
+
+		await page.waitForSelector(DOM_ELEMENTS.sidebar, { timeout: 20000 });
 
 		requiredAttributes.forEach((attribute) => {
 			valideHiddenInputs(page, attribute);

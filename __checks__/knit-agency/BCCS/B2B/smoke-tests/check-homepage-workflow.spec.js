@@ -1,10 +1,3 @@
-import { test, expect } from "@playwright/test";
-import {
-	generateThemeRoute,
-	loginAsCustomer,
-	enterStorePassword,
-} from "../../utilities/utils";
-
 /*
 Feature: Smoke test Homepage
   I want to test that the Homepage renders
@@ -20,26 +13,37 @@ Feature: Smoke test Homepage
     And the navigation search works as expected
 */
 
+import { test, expect } from "@playwright/test";
+import {
+	generateThemeRoute,
+	loginAsCustomer,
+	enterStorePassword,
+} from "../../utilities/utils";
+import {
+	B2B_DEV_URL,
+	THEME_ID,
+	STORE_PASSWORD,
+} from "../../utilities/constants";
+
+const DOM_ELEMENTS = {
+	guestHeader: ".site-main .welcome-message--container",
+	headerButtons: "[data-site-header-main] .site-header-account a",
+	siteNav: ".site-navigation",
+	welcomeMessage: ".welcome-message--title",
+	mosaicSection: ".promo-mosaic--container",
+};
 
 test.describe("Smoke test, Homepage", () => {
 	test("Should Display Guest Header", async ({ page }) => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-		await enterStorePassword(page, route, "quoddity");
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+
+		await enterStorePassword(page, route, STORE_PASSWORD);
 
 		// Ensure guest header is visible
-		await expect(
-			page.locator(".site-main .welcome-message--container")
-		).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.guestHeader)).toBeVisible();
 
 		// Ensure register/sign in links exist and href values are not empty
-		const headerButtons = await page.$$(
-			"[data-site-header-main] .site-header-account a"
-		);
+		const headerButtons = await page.$$(DOM_ELEMENTS.headerButtons);
 
 		await expect(headerButtons.length).toBeGreaterThan(0);
 		for (const button of headerButtons) {
@@ -49,15 +53,12 @@ test.describe("Smoke test, Homepage", () => {
 	});
 
 	test("Page Should Have Major Content Areas", async ({ page }) => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-		await loginAsCustomer(page, "/", route, "quoddity");
-		await expect(page.locator(".site-navigation")).toBeVisible();
-		await expect(page.locator(".welcome-message--title")).toBeVisible();
-		await expect(page.locator(".promo-mosaic--container").first()).toBeVisible();
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+		await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+		await expect(page.locator(DOM_ELEMENTS.siteNav)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.welcomeMessage)).toBeVisible();
+		await expect(
+			page.locator(DOM_ELEMENTS.mosaicSection).first()
+		).toBeVisible();
 	});
 });

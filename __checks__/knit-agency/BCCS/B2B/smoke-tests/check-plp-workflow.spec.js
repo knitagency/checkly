@@ -1,11 +1,3 @@
-import { test, expect } from "@playwright/test";
-import {
-	generateThemeRoute,
-	loginAsCustomer,
-    visitTheme,
-    redirect404Check
-} from "../../utilities/utils";
-
 /*
 Feature: Smoke test Product Listing Page (PLP)
   I want to test that the PLP renders
@@ -19,27 +11,41 @@ Feature: Smoke test Product Listing Page (PLP)
     All the content should be visible
 */
 
-const pageURL = '/collections/flower';
+import { test, expect } from "@playwright/test";
+import {
+	generateThemeRoute,
+	loginAsCustomer,
+	visitTheme,
+	redirect404Check,
+} from "../../utilities/utils";
+import {
+	B2B_DEV_URL,
+	THEME_ID,
+	STORE_PASSWORD,
+} from "../../utilities/constants";
+
+const pageURL = "/collections/flower";
+const DOM_ELEMENTS = {
+	breadcrumbContainer: ".breadcrumbs-container",
+	collectionImage: ".site-main .collection--image",
+	sidebar: ".productgrid--sidebar-section",
+	listItem: ".productlistitem",
+};
 
 test.describe("Smoke test, PDP", () => {
-    test("For Guests, page should be a 404", async ({ page }) => {
-        await redirect404Check(page, pageURL);
+	test("For Guests, page should be a 404", async ({ page }) => {
+		await redirect404Check(page, pageURL);
 	});
 
 	test("Should Have the Product Content Visible", async ({ page }) => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-		await loginAsCustomer(page, "/", route, "quoddity");
-        await visitTheme(page, pageURL)
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+		await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+		await visitTheme(page, pageURL);
 
-        // Check PLP elements are visible
-        await expect(page.locator('.breadcrumbs-container')).toBeVisible();
-        await expect(page.locator('.site-main .collection--image')).toBeVisible();
-        await expect(page.locator('.productgrid--sidebar-section')).toBeVisible();
-        await expect(page.locator('.productlistitem').first()).toBeVisible();
+		// Check PLP elements are visible
+		await expect(page.locator(DOM_ELEMENTS.breadcrumbContainer)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.collectionImage)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.sidebar)).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.listItem).first()).toBeVisible();
 	});
 });

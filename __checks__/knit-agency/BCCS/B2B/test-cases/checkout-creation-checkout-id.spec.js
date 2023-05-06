@@ -5,6 +5,7 @@ import {
 	AddProductsFromHeaderSearch,
 	proceedToCheckout,
 	visitTheme,
+	getLocalStorage,
 } from "../../utilities/utils";
 import { B2B_DEV_URL, THEME_ID, STORE_PASSWORD } from "../../utilities/constants";
 
@@ -20,13 +21,6 @@ const items = [
 	{ query: "1000132", quantity: "1" },
 	{ query: "1006311", quantity: "1" },
 ];
-
-/**
- * Returns local storage
- */
-const getLocalStorage = async (page) => {
-	return await page.evaluate(() => window.localStorage);
-};
 
 /**
  * Util function to return a boolean if the "checkout_id" exists in the local storage and is a valid value.
