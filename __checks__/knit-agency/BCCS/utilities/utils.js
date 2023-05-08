@@ -115,7 +115,7 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 		await page.waitForSelector(".search-flydown", { timeout: 5000 });
 		await expect(page.locator(".search-flydown").first()).toBeVisible(true);
 		await page.waitForSelector(".search-flydown--results", { timeout: 5000 });
-		await expect(page.locator(".search-flydown--results")).toBeVisible(true);
+		await expect(page.locator(".search-flydown--results").first()).toBeVisible(true);
 		await page.locator(".productlist--item a").first().click();
 		await page
 			.locator(".form-field--qty-input input")
@@ -242,9 +242,47 @@ const clearLocalStorage = async (page) => {
 //   });
 // });
 
+/**
+ *
+ * @param {number} timeout - timeout duration in miliseconds
+ * @param {string} message - future use may allow for additional information to be displayed
+ * @returns native timeout method for the page object
+ */
 const waitForPageToFullyRender = async (page, timeout, message = '') => {
 	return page.waitForTimeout(timeout);
 }
+
+/**
+ * Add to Cart from Cart's inline search component
+ *
+ * @param {string} query - Accepts any string for header search.
+ */
+const inCartSearch = async (page, pristine, query = '') => {
+	await waitForPageToFullyRender(page, 1500);
+	if (pristine) await page.locator('.product-inline-search-toggle[data-live-search-toggle]').click();
+	await page.getByPlaceholder('Add a product to order').fill(query);
+}
+
+/**
+ * Access Quick Shop modal by clicking on the Quick Look button in the first search result item
+ */
+const actionQuickLook = async (page) => {
+	await page.locator('#search-cart').getByRole('link').first().hover();
+	await page.getByRole('button', { name: 'Quick look' }).first().click();
+}
+
+/**
+ * Add to Cart through Quick Shop modal
+ */
+const atcQuickShop = async (page) => {
+	await waitForPageToFullyRender(page, 1500);
+
+	await expect(page.locator('.modal--quickshop-full[data-modal-container]')).toBeVisible(true);
+	await page.locator('#product-quantity-input').fill('1');
+	await page.getByRole('button', { name: 'Add to order' }).click();
+	await page.waitForSelector('.modal-close[data-modal-close]', { timeout: 1000 });
+	await page.locator('.modal-close[data-modal-close]').click();
+};
 
 export {
 	insertParam,
@@ -264,5 +302,8 @@ export {
 	proceedToCart,
 	getLocalStorage,
 	clearLocalStorage,
-	waitForPageToFullyRender
+	waitForPageToFullyRender,
+	inCartSearch,
+	actionQuickLook,
+	atcQuickShop
 };
