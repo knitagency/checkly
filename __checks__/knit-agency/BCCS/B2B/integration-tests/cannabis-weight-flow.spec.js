@@ -40,25 +40,25 @@ const route = generateThemeRoute(
   THEME_ID
 );
 
-const cdf_product_sku = '1017557';
+const cdfProductSku = '1017557';
 
 // Elements order within array is important
-const search_items_1 = [
-  { query: cdf_product_sku, quantity: '1' },
+const firstSetSearchItems = [
+  { query: cdfProductSku, quantity: '1' },
   { query: '1010834', quantity: '1' },
   { query: '1019074', quantity: '1' }
 ];
 
 // Elements order within array is important
-const search_items_2 = [
+const secondSetSearchItems = [
   { query: '1010834', quantity: '1' },
-  { query: cdf_product_sku, quantity: '1' },
+  { query: cdfProductSku, quantity: '1' },
   { query: '1019074', quantity: '1' },
 ];
 
-const header_search_skus = [search_items_1, search_items_2];
+const headerSearchSkus = [firstSetSearchItems, secondSetSearchItems];
 
-const inline_cart_skus = ['1023639'];
+const inlineCartSkus = ['1023639'];
 
 // Stateful values:
 let cartTotalCannabisWeight; // NOTE: Used to compare cart and checkout values
@@ -70,7 +70,7 @@ test.describe('Cannabis Weight is tallied correctly', () => {
     await loginAsCustomer(page, '', route, STORE_PASSWORD);
   });
 
-  header_search_skus.forEach((items, index) => {
+  headerSearchSkus.forEach((items, index) => {
     test(`${index} - Order: ${items.length}, building cart`, async ({ page }) => {
       await test.step('Cart checks', async () => {
         let pristine = true;
@@ -79,7 +79,7 @@ test.describe('Cannabis Weight is tallied correctly', () => {
         await proceedToCart(page);
         await expect(page.locator('.productlistitem')).toHaveCount(items.length);
 
-        inline_cart_skus.forEach(sku => {
+        inlineCartSkus.forEach(sku => {
           inCartSearch(page, pristine, sku);
           actionQuickLook(page);
           atcQuickShop(page);

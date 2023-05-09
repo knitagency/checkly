@@ -254,7 +254,8 @@ const waitForPageToFullyRender = async (page, timeout, message = '') => {
 
 /**
  * Add to Cart from Cart's inline search component
- *
+ * @param page - page instance used for test
+ * @param {boolean} pristine - If true adds step that activates search bar
  * @param {string} query - Accepts any string for header search.
  */
 const inCartSearch = async (page, pristine, query = '') => {
