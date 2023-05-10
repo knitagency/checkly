@@ -35,9 +35,9 @@ const DOM_ELEMENTS = {
 
 test("Delete Items from the cart", async ({ page }) => {
     const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
-	await loginAsCustomer(page, "/", route, STORE_PASSWORD);
-	await AddProductsFromHeaderSearch(page, items);
-	await visitTheme(page, "/cart");
+    await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+    await AddProductsFromHeaderSearch(page, items);
+    await visitTheme(page, "/cart");
 
     /** Remove all items from cart */
     await page.locator(DOM_ELEMENTS.removeAllToggle).click();

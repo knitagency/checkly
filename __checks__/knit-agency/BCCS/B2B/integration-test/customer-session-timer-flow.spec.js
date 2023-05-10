@@ -23,8 +23,6 @@ import {
 	loginAsCustomer,
 	visitTheme,
 	getLocalStorage,
-	clearLocalStorage,
-	redirect404Check,
 } from "../../utilities/utils";
 import {
 	B2B_DEV_URL,
