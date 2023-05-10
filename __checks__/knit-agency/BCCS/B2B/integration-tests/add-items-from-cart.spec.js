@@ -6,7 +6,8 @@ import {
   AddProductsFromHeaderSearch,
   visitTheme,
   waitForPageToFullyRender,
-  proceedToCart
+  proceedToCart,
+  inCartSearch
 } from '../../utilities/utils';
 /*
 Feature: Adding items to the cart
@@ -38,9 +39,7 @@ const skusText = [...items, extraItem].map(i => (i.query));
 
 const addItemFromInsideCart = async (page) => {
   await proceedToCart(page);
-  await waitForPageToFullyRender(page, 1000);
-  await page.locator('button:text("Add a product to order")').click();
-  await page.getByPlaceholder('Add a product to order').fill(extraItem.query);
+  await inCartSearch(page, true, extraItem.query);
   await waitForPageToFullyRender(page, 1000);
   await page.locator('#search-cart').getByRole('link').first().click();
 }
