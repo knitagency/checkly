@@ -15,29 +15,30 @@ import {
 	visitTheme,
 } from "../../utilities/utils";
 
-const skus = [
+import {
+	B2B_DEV_URL,
+	THEME_ID,
+	STORE_PASSWORD,
+} from "../../utilities/constants";
+
+const items = [
 	{ query: "1002112", quantity: "1" },
 	{ query: "1002435", quantity: "1" },
 ];
 
-test("Smoke Test Cart API", async ({ playwright, page }) => {
-	const route = generateThemeRoute(
-		"",
-		true,
-		"https://bccs-dev-b2b.myshopify.com/",
-		"124589967180"
-	);
-	await loginAsCustomer(page, "/", route, "quoddity");
-	await AddProductsFromHeaderSearch(page, skus);
+test("Smoke Test Cart API", async ({ page }) => {
+	const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
+	await loginAsCustomer(page, "/", route, STORE_PASSWORD);
+	await AddProductsFromHeaderSearch(page, items);
 	await visitTheme(page, "/cart");
 	await page.pause();
 
 	// TODO: convert this to playwright
 	// cy.request('cart.js').then(response => {
-    //     const items = JSON.parse(response.body).items;
-    //     expect(items.length).to.equal(skus.length);
-    //     items.forEach(product => {
-    //       expect(skus).to.contain(product.sku);
-    //     });
-    //   });
+	//     const items = JSON.parse(response.body).items;
+	//     expect(items.length).to.equal(items.length);
+	//     items.forEach(product => {
+	//       expect(skus).to.contain(product.sku);
+	//     });
+	//   });
 });

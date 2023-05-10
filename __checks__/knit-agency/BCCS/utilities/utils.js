@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-
+import { PASSWORD, USER, STORE_PASSWORD } from "./constants";
 /*
   Insert a query Param into URL
   {param} string key to append to url
@@ -7,8 +7,6 @@ import { expect } from "@playwright/test";
   {param} string url to append string to
   {return} string
 */
-// commands.js
-
 const insertParam = (key, value, url) => {
 	const newUrl = new URL(url);
 	newUrl.searchParams.append(key, value);
@@ -41,7 +39,7 @@ const redirect404Check = async (page, url) => {
 		"https://bccs-dev-b2b.myshopify.com/",
 		"124589967180"
 	);
-	await enterStorePassword(page, route, "quoddity");
+	await enterStorePassword(page, route, STORE_PASSWORD);
 	await visitTheme(page, url);
 
 	// Ensure 404 is visible
@@ -49,20 +47,24 @@ const redirect404Check = async (page, url) => {
 };
 
 // Visit Theme
-const visitTheme = async (page, path = "") => {
+const visitTheme = async (page, path = "", bypassPassword = false) => {
 	const route = generateThemeRoute(
 		"",
 		false,
 		"https://bccs-dev-b2b.myshopify.com"
 	);
 
-	await page.goto(`${route}${path}`);
+	if (bypassPassword) {
+		await enterStorePassword(page, route, STORE_PASSWORD);
+	} else {
+		await page.goto(`${route}${path}`);
+	}
 };
 
-const enterStorePassword = async (page, url, storePassword) => {
+const enterStorePassword = async (page, url) => {
 	await page.goto(url);
 	await page.getByLabel("Password").click();
-	await page.getByLabel("Password").fill(storePassword);
+	await page.getByLabel("Password").fill(STORE_PASSWORD);
 	await page.getByRole("button", { name: "Submit" }).click();
 };
 
@@ -71,14 +73,12 @@ const loginAsCustomer = async (page, path = "", url, storePassword) => {
 	if (storePassword) {
 		await enterStorePassword(page, url, storePassword);
 	}
-	const user = "Multipass.Customer1@bcldb.com";
-	const password = "MovingForward7!";
 	await page.getByRole("link", { name: "Sign in" }).click();
 	await page.getByRole("button", { name: "Advanced" }).click();
 	await page.locator("#proceed-link").click();
+	await page.getByPlaceholder("Email address").fill(USER);
 	await page.waitForTimeout(2000);
-	await page.getByPlaceholder("Email address").fill(user);
-	await page.getByPlaceholder("Password").fill(password);
+	await page.getByPlaceholder("Password").fill(PASSWORD);
 	await page.getByRole("button", { name: "Login" }).click();
 };
 
@@ -110,7 +110,9 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 		await page
 			.getByPlaceholder("What are you looking for?")
 			.fill(cartList[index].query);
+		await page.waitForSelector(".search-flydown", { timeout: 5000 });
 		await expect(page.locator(".search-flydown").first()).toBeVisible(true);
+		await page.waitForSelector(".search-flydown--results", { timeout: 5000 });
 		await expect(page.locator(".search-flydown--results")).toBeVisible(true);
 		await page.locator(".productlist--item a").first().click();
 		await page
@@ -120,6 +122,10 @@ const AddProductsFromHeaderSearch = async (page, cartList = []) => {
 			.getByRole("button", { name: "Add to order" })
 			.click({ timeout: 5000 });
 	}
+};
+
+const proceedToCart = async (page) => {
+	await page.locator(".site-navigation .site-header-cart--button").click();
 };
 
 const proceedToCheckout = async (page) => {
@@ -185,6 +191,21 @@ const checkThankYouStep = async (page) => {
 	await expect(page.locator(".step[data-step='thank_you']")).toBeVisible(true);
 };
 
+const removeDollarSign = (string) => {
+	return string.replace("$", "");
+};
+
+/**
+ * Returns local storage
+ */
+const getLocalStorage = async (page) => {
+	return await page.evaluate(() => window.localStorage);
+};
+
+const clearLocalStorage = async (page) => {
+	await page.evaluate(() => window.localStorage.clear());
+}
+
 // B2C functions that need to be converted
 // Cypress.Commands.add('fillOutShippingStep', () => {
 //   const actions = [
@@ -233,4 +254,8 @@ export {
 	checkThankYouStep,
 	enterStorePassword,
 	redirect404Check,
+	removeDollarSign,
+	proceedToCart,
+	getLocalStorage,
+	clearLocalStorage
 };

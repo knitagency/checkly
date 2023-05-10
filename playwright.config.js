@@ -15,6 +15,7 @@ import path from "path";
  */
 const config = {
   testDir: "./__checks__",
+  testMatch: /.*.js/,
   timeout: 30 * 1000,
   expect: {
     timeout: 5000,

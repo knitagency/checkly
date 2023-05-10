@@ -7,6 +7,7 @@ import {
 	redirect404Check,
 	visitTheme,
 } from "../../utilities/utils";
+import { B2B_DEV_URL, THEME_ID } from "../../utilities/constants";
 
 /*
 Feature: Smoke test for cart to checkout flow
@@ -25,17 +26,34 @@ Feature: Smoke test for cart to checkout flow
 
 const pageURL = "/cart";
 
-const valid_skus = [
+const validItems = [
 	{ query: "1000132", quantity: "1" },
 	{ query: "1006311", quantity: "1" },
 ];
 
-const expensive_skus = [
+const expensiveItems = [
 	{ query: "1003839", quantity: "100" },
 	{ query: "1024728", quantity: "100" },
 ];
 
 const inventory_sku = [{ query: "1003839", quantity: "1" }];
+
+const DOM_ELEMENTS = {
+	cartAttributes: {
+		cannabisWeight: "[data-cart-weight-cannabis]",
+		shippingWeight: "[data-cart-weight-shipping]",
+		remaining: "[data-cart-remaining]",
+		total: "[data-cart-total]",
+	},
+	product: {
+		title: ".productlistitem--title",
+		money: ".productlistitem--price > .price--main > .money",
+		name: ".product__description__name",
+		price: ".product__price > span",
+	},
+	sidebar: ".sidebar",
+	warningMessage: ".cart-warning.active > .message--warning",
+};
 
 test("Smoke test, Cart to Checkout", async ({ page }) => {
 	await test.step("When a Guest is Visiting", async () => {
@@ -43,20 +61,20 @@ test("Smoke test, Cart to Checkout", async ({ page }) => {
 	});
 
 	await test.step("Log in as customer, should have the cart displayed", async () => {
-		const route = generateThemeRoute(
-			"",
-			true,
-			"https://bccs-dev-b2b.myshopify.com/",
-			"124589967180"
-		);
-
+		const route = generateThemeRoute("", true, B2B_DEV_URL, THEME_ID);
 		await loginAsCustomer(page, "/", route);
-		await AddProductsFromHeaderSearch(page, valid_skus);
+		await AddProductsFromHeaderSearch(page, validItems);
 		await visitTheme(page, "/cart");
-		await expect(page.locator("[data-cart-weight-cannabis]")).toBeVisible();
-		await expect(page.locator("[data-cart-weight-shipping]")).toBeVisible();
-		await expect(page.locator("[data-cart-remaining]")).toBeVisible();
-		await expect(page.locator("[data-cart-total]")).toBeVisible();
+		await expect(
+			page.locator(DOM_ELEMENTS.cartAttributes.cannabisWeight)
+		).toBeVisible();
+		await expect(
+			page.locator(DOM_ELEMENTS.cartAttributes.shippingWeight)
+		).toBeVisible();
+		await expect(
+			page.locator(DOM_ELEMENTS.cartAttributes.remaining)
+		).toBeVisible();
+		await expect(page.locator(DOM_ELEMENTS.cartAttributes.total)).toBeVisible();
 	});
 
 	await test.step("Should be able to successfully continue to checkout when cart is valid", async () => {
@@ -73,32 +91,39 @@ test("Smoke test, Cart to Checkout", async ({ page }) => {
 
 		await visitTheme(page, "/cart");
 
-        // Push product titles from /cart
-        for (const productTitles of await page.locator(".productlistitem--title").all()) {
-			const title = await productTitles.textContent()
-            cartTitles.push(title.trim());
-        }
+		// Push product titles from /cart
+		for (const productTitles of await page
+			.locator(DOM_ELEMENTS.product.title)
+			.all()) {
+			const title = await productTitles.textContent();
+			cartTitles.push(title.trim());
+		}
 
-        // Push product prices from /cart
-        for (const productPrice of await page.locator(".productlistitem--price > .price--main > .money").all()) {
-			const price = await productPrice.textContent()
-            cartPrices.push(price);
-        }
+		// Push product prices from /cart
+		for (const productPrice of await page
+			.locator(DOM_ELEMENTS.product.money)
+			.all()) {
+			const price = await productPrice.textContent();
+			cartPrices.push(price);
+		}
 
 		await proceedToCheckout(page);
-		await page.waitForSelector('.sidebar', { timeout: 20000 });
+		await page.waitForSelector(DOM_ELEMENTS.sidebar, { timeout: 20000 });
 
-        // Push product prices from checkout
-        for (const checkoutProductTitles of await page.locator(".product__description__name").all()) {
-			const title = await checkoutProductTitles.textContent()
+		// Push product prices from checkout
+		for (const checkoutProductTitles of await page
+			.locator(DOM_ELEMENTS.product.name)
+			.all()) {
+			const title = await checkoutProductTitles.textContent();
 			checkoutTitles.push(title);
-        }
+		}
 
-
-        for (const checkoutProductPrice of await page.locator(".product__price > span").all()) {
-			const price = await checkoutProductPrice.textContent()
-            checkoutPrices.push(price);
-        }
+		for (const checkoutProductPrice of await page
+			.locator(DOM_ELEMENTS.product.price)
+			.all()) {
+			const price = await checkoutProductPrice.textContent();
+			checkoutPrices.push(price);
+		}
 
 		expect(sameMembers(cartTitles, checkoutTitles)).toBe(true);
 	});
@@ -123,10 +148,11 @@ test("Smoke test, Cart to Checkout", async ({ page }) => {
 
 	await test.step("should not be able to continue to checkout if it exceeds order limits and cart is invalid", async () => {
 		await visitTheme(page, "/");
-		const warningMessage = ".cart-warning.active > .message--warning";
-		await AddProductsFromHeaderSearch(page, expensive_skus);
+		await AddProductsFromHeaderSearch(page, expensiveItems);
 		await visitTheme(page, "/cart");
-		await page.waitForSelector(warningMessage, { timeout: 5000 });
-		await expect(page.locator(warningMessage).first()).toBeVisible();
+		await page.waitForSelector(DOM_ELEMENTS.warningMessage, { timeout: 5000 });
+		await expect(
+			page.locator(DOM_ELEMENTS.warningMessage).first()
+		).toBeVisible();
 	});
 });
