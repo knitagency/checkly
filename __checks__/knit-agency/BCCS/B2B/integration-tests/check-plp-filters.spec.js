@@ -26,8 +26,14 @@ const route = generateThemeRoute(
 );
 
 const filterPairs = [
-  [{param: 'Brand', value: 'Aurora'}, {param: 'Species', value: 'Indica-Dominant'}],
-  [{param: 'Produced in', value: 'Alberta'}, {param: 'Consumption method', value: 'Ingestion'}],
+  [
+    { param: 'Brand', value: 'Aurora' },
+    { param: 'Species', value: 'Indica-Dominant' }
+  ],
+  [
+    { param: 'Produced in', value: 'Alberta' },
+    { param: 'Consumption method', value: 'Ingestion' }
+  ],
 ]
 
 let page;
@@ -36,7 +42,7 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
   await visitTheme(page);
   await loginAsCustomer(page, '', route, STORE_PASSWORD);
-  await navigateUsingMenu(page);
+  await assertMenuNavigation(page);
 });
 
 test.afterAll(async () => await page.close());
@@ -51,11 +57,11 @@ filterPairs.forEach(pair => {
 
     await test.step('Access item full page view and verify values', async () => {
       await page.locator('[data-product-item-trigger]').first().click();
-      await readFilteredItem(page, first, second);
+      await assertFilteredItem(page, first, second);
     });
 
     await test.step('Navigate back through breadcrumbs', async () => {
-      await navigateUsingBreadcrumbs(page);
+      await assertBreadcrumbNavigation(page);
     });
   });
 });
@@ -70,7 +76,7 @@ test('Check sorting tools', async () => {
   expect(page.locator('[data-product-item-trigger]').first()).not.toHaveText(topListItem);
 });
 
-const navigateUsingMenu = async (page) => {
+const assertMenuNavigation = async (page) => {
   expect(page.getByRole('link', { name: 'Dried', exact: true })).toBeVisible(true);
   await page.getByRole('link', { name: 'Dried', exact: true }).click();
 
@@ -85,9 +91,10 @@ const actionFilters = async (page, firstFilter, secondFilter) => {
   await page.getByRole('link', { name: firstFilter.value }).click();
   await waitForPageToFullyRender(page, 1000);
   await page.getByRole('link', { name: secondFilter.value }).click();
+  await waitForPageToFullyRender(page, 1000);
 }
 
-const readFilteredItem = async (page, firstFilter, secondFilter) => {
+const assertFilteredItem = async (page, firstFilter, secondFilter) => {
   expect(page.getByRole('listitem').filter({ hasText: firstFilter.param }))
     .toContainText(firstFilter.value);
 
@@ -95,7 +102,7 @@ const readFilteredItem = async (page, firstFilter, secondFilter) => {
     .toContainText(secondFilter.value);
 }
 
-const navigateUsingBreadcrumbs = async (page) => {
+const assertBreadcrumbNavigation = async (page) => {
   const destinationURL = new RegExp('collections/flower');
   const breadcrumb = await page.getByRole('navigation', { name: 'Breadcrumbs' })
     .getByRole('link', { name: 'Flower' });
